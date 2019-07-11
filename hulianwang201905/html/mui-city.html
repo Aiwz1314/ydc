@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+	        
+	<meta charset="utf-8">
+	        
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	        <title>选择城市</title>
+	        
+	<link href="../css/mui.min.css" type="text/css" rel="stylesheet">
+	        
+	<link href="../mui.indexedlist.css" type="text/css" rel="stylesheet">
+	        
+	<link rel="stylesheet" href="../css/common.css">
+	        <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=bxhtznAnBRINSrLSSi7vj1l6D1QkuCgR"></script>
+	        <style>
+		            html,
+            body {
+                height: 100%;
+                overflow: hidden;
+            }
+            .mui-bar {
+                -webkit-box-shadow: none;
+                box-shadow: none;
+            }
+             input, button, .mui-btn {
+                margin-top: 10px;
+                margin-left: 5px;
+            } 
+            .mui-table-view-cell.mui-active{
+background-color: #fff;
+} 
+        </style>
+		    </head>
+
+	    <body>
+		    <div style="display:none">
+			    <header class="mui-bar mui-bar-nav">
+				            <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left white"></a>
+				            <h1 class="mui-title white">选择城市</h1>
+				        </header>
+			    </div>
+		        
+		        <div class="mui-content">
+			            <div id='list' class="mui-indexed-list">
+				                <div class="mui-indexed-list-search mui-input-row mui-search">
+					                    <input type="search" class="mui-input-clear mui-indexed-list-search-input" placeholder="搜索城市">
+					                </div>
+				                <div class="mui-indexed-list-bar">
+					                    <a>A</a>
+					                    <a>B</a>
+					                    <a>C</a>
+					                    <a>D</a>
+					                    <a>E</a>
+					                    <a>F</a>
+					                    <a>G</a>
+					                    <a>H</a>
+					                    <a>I</a>
+					                    <a>J</a>
+					                    <a>K</a>
+					                    <a>L</a>
+					                    <a>M</a>
+					                    <a>N</a>
+					                    <a>O</a>
+					                    <a>P</a>
+					                    <a>Q</a>
+					                    <a>R</a>
+					                    <a>S</a>
+					                    <a>T</a>
+					                    <a>U</a>
+					                    <a>V</a>
+					                    <a>W</a>
+					                    <a>X</a>
+					                    <a>Y</a>
+					                    <a>Z</a>
+					                </div>
+				                <div class="mui-indexed-list-alert"></div>
+				                <div class="mui-indexed-list-inner">
+					                    <div class="mui-indexed-list-empty-alert">没有数据</div>
+					                <div class="mui-content-padded">
+						                    <h5>定位城市</h5>
+						                    <div id="allmap"></div>
+						                    <button  type="button" class="mui-btn mui-icon mui-icon-location"><span id="cityName"></span></button>
+						                
+						<!-- <input id="cityName"  type="button" class="mui-btn" /> -->
+						                 <div id="oftenCity">
+							                
+							<!-- <h5>常用城市</h5>
+                <div id="oftenCity">
+                
+                </div> -->
+							                 </div>
+						                
+						                
+						                <h5 style="margin-top: 10px;">热门城市</h5>    
+						                <input type="button" class="mui-btn" value="北京市" />
+						                <input type="button" class="mui-btn" value="上海市" />
+						                <input type="button" class="mui-btn" value="广州市" />
+						                <input type="button" class="mui-btn" value="深圳市" />
+						            </div>
+					                    <ul id="ul_city" class="mui-table-view">
+						                    
+						                    </ul>
+					                </div>
+				            </div>
+			        </div>
+		        <script src="/mpsp/mui/js/mui.min.js"></script>
+		        <script src="/mpsp/mui/js/mui.indexedlist.js"></script>
+		        <script src="/mpsp/js/login/jquery-1.5.1.min.js"></script>
+		        <script src="/mpsp/js/login/jquery.cookie.js"></script>
+		        <script src="/mpsp/js/weixin/cityList/cityList.js"></script>
+		        <script src="/mpsp/js/weixin/cityList/cityToCookie.js"></script>
+		        
+		    </body>
+
+</html>
+
+<script>
+相应的js
+
+
+/*获取根目录*/
+var $WEB_ROOT_PATH = getContextPath();
+
+function getContextPath(){
+    var strFullPath=window.document.location.href;
+    var strPath=window.document.location.pathname;
+    var pos=strFullPath.indexOf(strPath);
+    var prePath=strFullPath.substring(0,pos);
+    var postPath=strPath.substring(0,strPath.substr(1).indexOf('/')+1);
+    var basePath = prePath;
+    basePath = prePath + postPath;
+    return basePath;
+}
+var cookieCitys = new Array();
+var loctionCity="";
+var linkUrl = '';
+// 百度地图API功能
+        /*var geolocation = new BMap.Geolocation();
+        geolocation.getCurrentPosition(function(r){
+            if(this.getStatus() == BMAP_STATUS_SUCCESS){
+                document.getElementById('cityName').innerText=r.address.city;
+                loctionCity=r.address.city;
+            }
+            else {
+                //alert('failed'+this.getStatus());
+                mui.alert("城市定位失败");
+            }        
+        },{enableHighAccuracy: true})*/
+
+        var locateCity = $.cookie('locateCity');
+        if (locateCity != undefined) {
+            document.getElementById('cityName').innerText = locateCity;
+            loctionCity = locateCity;
+        }
+        
+mui.init();
+mui.ready(function() {
+                //控制页面回转
+                redirecPage();
+                
+                //加载常用城市
+                var city=$.cookie('city');
+                var cookieCitys ="";
+                if(city!=undefined){
+                     cookieCitys = city.split("-");
+                    findOftenCity(cookieCitys);
+                }else{
+                    findOftenCity(cookieCitys);
+                }
+                
+                //获取城市列表数据
+                getCityList();
+                
+                
+                //对城市列表进行监听
+                var header = document.querySelector('header.mui-bar');
+                var list = document.getElementById('list');
+                list.style.height = (document.body.offsetHeight - header.offsetHeight) + 'px';
+                window.indexedList = new mui.IndexedList(list);
+                var ul_city = document.getElementById('ul_city');
+            ul_city.addEventListener("tap", function(e) {
+                var tagClass = e.target.getAttribute("class");
+                if (tagClass && tagClass.indexOf("mui-table-view-cell") != -1) {
+                    var selectCity = e.target.innerText;
+                    var city=setCityToCookie(selectCity);
+                     cookieCitys = city.split("-");
+                    //  check(selectCity);
+                    localStorage.setItem("selectCity",city);
+                    mui.openWindow({
+                         //url: $WEB_ROOT_PATH +'/weixin/handyServe/handyServe.html',  
+                        url:linkUrl,
+                            id: linkUrl,
+                            extras: {  
+                                selectCity:city, //自定义扩展参数，可以用来处理页面间传值  
+                            },
+                            waiting: {  
+                                autoShow: true, //自动显示等待框，默认为true  
+                                title: '正在加载...', //等待对话框上显示的提示内容  
+                                 
+                            }
+                    });
+                    //mui.alert("选择的城市=" + selectCity);
+                    findOftenCity(cookieCitys);
+                }
+            });
+            
+            
+            
+            //对热门城市进行数据点击监听
+                mui(document.body).on('tap', '.mui-btn', function(e) {
+                     var selectCity=this.getAttribute("value");
+                     if(selectCity==null){
+                         if(loctionCity==""||loctionCity==null){
+                             mui.alert("未选择城市！");
+                             return;
+                         }else{
+                             selectCity= loctionCity;
+                         }
+                        
+                     }
+                        var city=setCityToCookie(selectCity);
+                        //alert(city);
+                         cookieCitys = city.split("-");
+                      //    check(selectCity);
+                          findOftenCity(cookieCitys);
+               // var dns=e.target.getAttribute("value");第二种获取方式
+                          localStorage.setItem("selectCity",city);
+                    mui.openWindow({
+                        // url: $WEB_ROOT_PATH +'/weixin/handyServe/handyServe.html',
+                           url:linkUrl,
+                            id: linkUrl,
+                            waiting: {  
+                                autoShow: true, //自动显示等待框，默认为true  
+                                title: '正在加载...', //等待对话框上显示的提示内容  
+                                 
+                            }
+                    });
+                });
+            });
+
+
+//获取城市列表数据
+function getCityList(){
+    mui.ajax({
+        url: $WEB_ROOT_PATH +
+'/dhcmsArea/FrontDhcmsAreaCtrl.htm?BLHMI=queryCityListBycityLevel&dto.dhcmsArea.level='+2,
+        dataType: 'json', //服务器返回json格式数据
+        type: 'post', //HTTP请求类型
+        async: false,
+        timeout: 5000, //超时时间设置为5秒；
+        success: function(json) {
+            var channelListStr = "";
+        //var    total=json.total;
+            var robCitys = new Array();
+            if (json["rows"].length > 0)  {
+                //双层循环目的拿到26个字母中其中字母下对应有数据的字母并将这些存储到robcitys数组中
+                for(var j=0;j<26;j++) {                  //   channelListStr +="<li data-group='"
+ +String.fromCharCode(65+j)+"' class=\"mui-table-view-divider mui-indexed-list-group\">"+String.fromCharCode(65+j)+"</li>";
+	                    for ( var i = 0; i < json["rows"].length; i++) {                         
+	 if(json["rows"][i].nameSpell.substring(0,1).toUpperCase()==String.fromCharCode(65+j)){                           
+	  robCitys.push(String.fromCharCode(65+j));                           }                       }                 }
+	              }             if(robCitys.length>0){
+		                //将拿到的字母数组进行去重
+		                    function unique(arr){
+		                        // 遍历arr，把元素分别放入tmp数组(不存在才放)
+		                        var tmp = new Array();
+		                        for(var i in arr){
+		                            //该元素在tmp内部不存在才允许追加
+		                            if(tmp.indexOf(arr[i])==-1){
+		                                tmp.push(arr[i]);
+		                            }
+		                        }
+		                        return tmp;
+		                    }
+		                    var arr = unique(robCitys);
+		                    //遍历只有数据的字母下的城市数据
+		                for (var m = 0; m < arr.length; m++) {                     channelListStr +="<li data-group='"
+		 +arr[m]+"' class=\"mui-table-view-divider mui-indexed-list-group\">"+arr[m]+"</li>";
+			                    for ( var n = 0; n < json["rows"].length;n++) {                       
+			  if(json["rows"][n].nameSpell.substring(0,1).toUpperCase()==arr[m]){                                //channelListStr
+			 +="<li data-group='" +String.fromCharCode(65+j)+"' class=\"mui-table-view-divider mui-indexed-list-group\">"+String.fromCharCode(65+j)+"</li>";
+				                               channelListStr += "<li data-value='"+json["rows"][n].nameSpell+"' data-tags='"+json["rows"][n].nameSpell+"'
+				 class=\"mui-table-view-cell mui-group-list-item\">";
+					                               channelListStr += json["rows"][n].name;
+					                               channelListStr += "</li>";
+				                    }
+				                    
+				                     }
+				                
+				            }
+				             var list = document.getElementById("ul_city");
+				            list.innerHTML = channelListStr;
+				            }
+				        },
+				        error: function(error, failingQuery) {
+				//            plus.nativeUI.closeWaiting();
+				            mui.toast("网络异常，请稍后再试");
+				            //异常处理；
+				            console.log(error);
+				        }
+				    });
+				}        
+				//常用城市
+				function findOftenCity(cookieCitys){
+				    var oftenCityStr = "";
+				    var cityArr=new Array();
+				    //cityArr=cookieCitys;
+				    if(cookieCitys.length!=0){
+				        if(cookieCitys.length>3){
+				            for(var i=1;i<=4;i++) {                 cityArr.push(cookieCitys[cookieCitys.length-i]);             }
+				             //cityArr.splice(cityArr[0],1);             oftenCityStr +="<h5 style=\" margin-top: 10px;\">常用城市</h5>";
+					            for(var i=0;i<cityArr.length;i++) {                 var oftenCity=cityArr[i];               
+					  if(oftenCity=="" ){                     continue;                 }                 oftenCityStr +="<input type=\"
+					 button\"   class=\"mui-btn\" value='"+oftenCity+"' style=\"margin-right:5px\">";
+						            }
+						        }else{
+						            cityArr=cookieCitys;
+						            oftenCityStr += "<h5 style=\"margin-top: 10px;\">常用城市</h5>";
+						            for(var i=cityArr.length-1;i>=0;i--){
+						                var oftenCity=cityArr[i];
+						                oftenCityStr += "<input type=\"button\"  class=\"mui-btn\" value='"+oftenCity+"' style=\"margin-right:5px\">";
+						            }
+						        }
+						        
+						    }else{    
+						        oftenCityStr += "";
+						    }
+						    
+						     var list = document.getElementById("oftenCity");
+						        list.innerHTML = oftenCityStr;
+						    
+						}
+						//页面控制跳转
+						function redirecPage(){
+						    var module = $.cookie('module');
+						    
+						    if (module == 'handyServe') {
+						        linkUrl = "/mpsp/weixin/handyServe/handyServe.html";
+						    }else if(module == 'cityGuideMain'){
+						        linkUrl = "/mpsp/weixin/cityGuide/cityGuideMain.html";
+						    }else if(module == 'serveOrgMain'){
+						        linkUrl = "/mpsp/weixin/publicServe/serveOrg/serveOrgMain.html";
+						    }else if(module == 'actPartMain'){
+						        linkUrl = "/mpsp/weixin/publicServe/actPart/actPartMain.html";
+						    }
+						}
+
+
+
+						/*function check(selectCity){
+						    var flag=0;
+						    var flag1=0;
+						    if(cookieCitys.length>3){
+						        
+						        for (var i = 0; i < cookieCitys.length; i++) {               if (cookieCitys[i] !=selectCity){           
+						        flag+=1;                                              }                   }         if(flag==cookieCitys.length){
+						             cookieCitys.push(selectCity);             cookieCitys.splice(cookieCitys[0],1);         }         
+						     }else if(cookieCitys.length==0){         //if(cookieCitys.indexOf(selectCity)!=-1){           
+						  cookieCitys.push(selectCity);             //}     }else{         for (var i=0; i < cookieCitys.length; i++) {
+						               if (cookieCitys[i] !=selectCity){                   flag1+=1;                                    
+						          }                   }         if(flag1==cookieCitys.length){             cookieCitys.push(selectCity);
+						         }     } }*/ //var cookieCitys=new Array(); function setCityToCookie(selectCity){     var city=$.cookie('city');
+						     if(city!=undefined){         var fruits=city.split("-");         for (var i=0; i < fruits.length; i++) {   
+						          if(selectCity==fruits[i]){                 fruits[i];                 fruits.splice(i,1);           
+						                       city=fruits.join("-");             }         }         var selCity="" ;         if(city==""
+						 ){             selCity=selectCity;         }else{             selCity=city+"-"+selectCity;         }   
+						  $.cookie('city', selCity, { expires: 7 ,path:'/'});     city=$.cookie('city');     }else{       
+						  $.cookie('city', selectCity, { expires: 7 ,path:'/'});         city=$.cookie('city');     }           return
+						 city; } function getFirstCityFromCookie(){     var city=$.cookie('city');     if(city==undefined){       
+						  return null;     }else{         var cityName=city.split("-");         return cityName[cityName.length-1];     }
+						      } 这里简单说一下其中的核心代码和思路
+						 铺数据的时候城市名称是动态的，是在后台管理模块中添加进去的，添加具体城市名称的时候有一个字段是城市名称对应的拼音，我们拿到数据的时候得截取拼音的首字母然后去匹配26个英文字母，然后铺到相应的字母下面。 var
+						 channelListStr="" ;         //var    total=json.total;             var robCitys=new Array();             if
+						 (json["rows"].length> 0)  {
+							                //双层循环目的拿到26个字母中其中字母下对应有数据的字母并将这些存储到robcitys数组中
+							                for(var j=0;j<26;j++) {                  //   channelListStr +="<li data-group='"
+							 +String.fromCharCode(65+j)+"' class=\"mui-table-view-divider mui-indexed-list-group\">"+String.fromCharCode(65+j)+"</li>";
+								                    for ( var i = 0; i < json["rows"].length; i++) {                         
+								 if(json["rows"][i].nameSpell.substring(0,1).toUpperCase()==String.fromCharCode(65+j)){                       
+								      robCitys.push(String.fromCharCode(65+j));                           }                       }           
+								      }              }             if(robCitys.length>0){
+									                //将拿到的字母数组进行去重
+									                    function unique(arr){
+									                        // 遍历arr，把元素分别放入tmp数组(不存在才放)
+									                        var tmp = new Array();
+									                        for(var i in arr){
+									                            //该元素在tmp内部不存在才允许追加
+									                            if(tmp.indexOf(arr[i])==-1){
+									                                tmp.push(arr[i]);
+									                            }
+									                        }
+									                        return tmp;
+									                    }
+									                    var arr = unique(robCitys);
+									                    //遍历只有数据的字母下的城市数据
+									                for (var m = 0; m < arr.length; m++) {                     channelListStr +="<li data-group='"
+									 +arr[m]+"' class=\"mui-table-view-divider mui-indexed-list-group\">"+arr[m]+"</li>";
+										                    for ( var n = 0; n < json["rows"].length;n++) {                       
+										  if(json["rows"][n].nameSpell.substring(0,1).toUpperCase()==arr[m]){                                //channelListStr
+										 +="<li data-group='" +String.fromCharCode(65+j)+"' class=\"mui-table-view-divider mui-indexed-list-group\">"+String.fromCharCode(65+j)+"</li>";
+											                               channelListStr += "<li data-value='"+json["rows"][n].nameSpell+"' data-tags='"+json["rows"][n].nameSpell+"'
+											 class=\"mui-table-view-cell mui-group-list-item\">";
+												                               channelListStr += json["rows"][n].name;
+												                               channelListStr += "</li>";
+											                    }
+											                    
+											                     }
+											                
+											            }
+											             var list = document.getElementById("ul_city");
+											            list.innerHTML = channelListStr;
+											            }
+
+											常用城市的需求呢，要求记录你点击的城市的名称，这个得放到cookie中缓存起来，避免下次重新打开页面的时候记录消失，另外呢城市重复的只显示一个
+
+											//常用城市
+											function findOftenCity(cookieCitys){
+											    var oftenCityStr = "";
+											    var cityArr=new Array();
+											    //cityArr=cookieCitys;
+											    if(cookieCitys.length!=0){
+											        if(cookieCitys.length>3){
+											            for(var i=1;i<=4;i++) {                 cityArr.push(cookieCitys[cookieCitys.length-i]);       
+											      }             //cityArr.splice(cityArr[0],1);             oftenCityStr +="<h5 style=\" margin-top:
+											 10px;\">常用城市</h5>";
+												            for(var i=0;i<cityArr.length;i++) {                 var oftenCity=cityArr[i];               
+												  if(oftenCity=="" ){                     continue;                 }                 oftenCityStr +="<input type=\"
+												 button\"   class=\"mui-btn\" value='"+oftenCity+"' style=\"margin-right:5px\">";
+													            }
+													        }else{
+													            cityArr=cookieCitys;
+													            oftenCityStr += "<h5 style=\"margin-top: 10px;\">常用城市</h5>";
+													            for(var i=cityArr.length-1;i>=0;i--){
+													                var oftenCity=cityArr[i];
+													                oftenCityStr += "<input type=\"button\"  class=\"mui-btn\" value='"+oftenCity+"' style=\"margin-right:5px\">";
+													            }
+													        }
+													        
+													    }else{    
+													        oftenCityStr += "";
+													    }
+													    
+													     var list = document.getElementById("oftenCity");
+													        list.innerHTML = oftenCityStr;
+													    
+													}
+
+</scritp>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<style>
+			html,body {
+				background-color: #efeff4;
+			}
+			.title{
+				/* margin: 20px 15px 10px;
+				color: #6d6d72;
+				font-size: 15px; */
+				background-color: #FFFFFF;
+				margin-bottom: 5px;
+			}
+			
+			#userPhoto {
+				/* width: 50px; */
+				height: 70px;
+				margin-left: 15px;
+				margin-bottom: 10px;
+				margin-top: 20px;
+			}
+			.ui-photo-image {
+				width: 50px;
+				height: 50px;
+				background: url(../images/userphoto.jpg) no-repeat;
+				/* background: url(../images/logo.png) no-repeat; */
+				background-position: center;
+				background-size: 50px;
+				border-radius: 50%;
+				margin-left: 10px;
+				margin-top: 10px;
+				margin-bottom: 20px;
+				float: left;
+			}
+			.userPhoto_name{
+				float: left;
+				width: 60%;
+				font-size: 15px;
+				margin-left: 20px;
+				margin-top: 10px;
+			}
+
+		</style>
+		
+		<script src="../js/mui.min.js"></script>
+		<script>
+			mui.init();
+		</script>
+	</head>
+	<body>
+		<div class="mui-content">
+			<div class="title">
+				<div id="userPhoto" class="mui-navigate-right">
+					<div class="ui-photo-image"></div>
+					<div class="userPhoto_name">运动筹</div>
+					<div class="userPhoto_name">10001</div>
+			
+				</div>
+				<div class="grid-content">
+					<ul class="mui-table-view mui-grid-view mui-grid-9" style="background-color: #FFFFFF;">
+						<li class="mui-table-view-cell mui-media mui-col-xs-6 mui-col-sm-6"><a href="#">
+								<span class="mui-icon">0</span>
+								<div class="mui-media-body">健康币</div>
+							</a></li>
+						<li class="mui-table-view-cell mui-media mui-col-xs-6 mui-col-sm-6"><a href="#">
+								<span class="mui-icon">0</span>
+								<div class="mui-media-body">勋章</div>
+							</a></li>
+					</ul>
+				</div>
+			</div>
+			
+		
+			
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a class="mui-navigate-right">
+						健康档案
+					</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a class="mui-navigate-right">
+						邀请用户得奖励
+					</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a class="mui-navigate-right">
+						健康指导
+					</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a class="mui-navigate-right">
+						我的好友
+					</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a class="mui-navigate-right">
+						实名认证
+					</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a class="mui-navigate-right">
+						关于我们
+					</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a class="mui-navigate-right">
+						帮助与反馈
+					</a>
+				</li>
+			</ul>
+
+			<ul class="mui-table-view" style="margin-top: 25px;">
+				<li class="mui-table-view-cell">
+					<a style="text-align: center;color: #FF3B30;">
+						退出登录
+					</a>
+				</li>
+			</ul>
+		</div>
+	</body>
+	
+	
+</html>
